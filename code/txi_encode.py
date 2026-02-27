@@ -1,7 +1,8 @@
 import os
 import sys
+import lzma
 
-HEADER = ".txi"
+HEADER = b".txi\n"  # bytes now
 
 def encode_txt_to_txi():
     txt_base = input("\nEnter absolute path of .txt file (no extension): ").strip()
@@ -14,20 +15,29 @@ def encode_txt_to_txi():
         print(f"Error: '{txt_file}' does not exist.")
         sys.exit(1)
 
-    with open(txt_file, "r", encoding="utf-8") as rf:
-        text = rf.read()
-    original_size = len(text.encode("utf-8"))
+    # Read as bytes
+    with open(txt_file, "rb") as rf:
+        data = rf.read()
+
+    original_size = len(data)
+
+    # Compress using LZMA
+    compressed = lzma.compress(data)
+    compressed_size = len(compressed)
 
     out_file = os.path.splitext(txt_file)[0] + ".txi"
+
     try:
-        with open(out_file, "w", encoding="utf-8") as wf:
-            wf.write(HEADER + "\n")
-            wf.write(text)
+        with open(out_file, "wb") as wf:
+            wf.write(HEADER)
+            wf.write(compressed)
     except Exception as e:
         print(f"Error writing .txi: {e}")
         sys.exit(1)
 
-    print(f"→ Wrote '{out_file}' (raw text)")
+    ratio = compressed_size / original_size if original_size else 0
+
+    print(f"→ Wrote '{out_file}' (LZMA compressed)")
     print(f"Original Size:   {original_size} bytes")
-    print(f"Final Size:      {original_size} bytes")
-    print("Compression Ratio: N/A (no compression)")
+    print(f"Compressed Size: {compressed_size} bytes")
+    print(f"Compression Ratio: {ratio:.2f}")
