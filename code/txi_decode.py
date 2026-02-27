@@ -1,7 +1,8 @@
 import os
 import sys
+import lzma
 
-HEADER = ".txi"
+HEADER = b".txi\n"
 
 def decode_txi_to_txt():
     base = input("\nEnter absolute path of .txi file (no extension): ").strip()
@@ -15,28 +16,39 @@ def decode_txi_to_txt():
         sys.exit(1)
 
     try:
-        with open(txi_file, "r", encoding="utf-8") as rf:
-            lines = rf.readlines()
+        with open(txi_file, "rb") as rf:
+            header = rf.readline()
+            if header != HEADER:
+                print("Error: invalid .txi header.")
+                sys.exit(1)
+
+            compressed_data = rf.read()
     except Exception as e:
         print(f"Error reading .txi: {e}")
         sys.exit(1)
 
-    if not lines or lines[0].strip() != HEADER:
-        print("Error: invalid .txi header.")
+    compressed_size = len(compressed_data)
+
+    try:
+        decompressed = lzma.decompress(compressed_data)
+    except Exception as e:
+        print(f"Error during decompression: {e}")
         sys.exit(1)
 
-    body = "".join(lines[1:])
-    decoded_size = len(body.encode("utf-8"))
+    decompressed_size = len(decompressed)
 
     out_txt = os.path.splitext(txi_file)[0] + "_decoded.txt"
+
     try:
-        with open(out_txt, "w", encoding="utf-8") as wf:
-            wf.write(body)
+        with open(out_txt, "wb") as wf:
+            wf.write(decompressed)
     except Exception as e:
         print(f"Error writing decoded .txt: {e}")
         sys.exit(1)
 
-    print(f"→ Wrote '{out_txt}' (raw text)")
-    print(f".txi Body Size:     {decoded_size} bytes")
-    print(f"Decoded Size:       {decoded_size} bytes")
-    print("Decompression Ratio: N/A (no compression)")
+    ratio = decompressed_size / compressed_size if compressed_size else 0
+
+    print(f"→ Wrote '{out_txt}' (LZMA decompressed)")
+    print(f"Compressed Size:   {compressed_size} bytes")
+    print(f"Decoded Size:      {decompressed_size} bytes")
+    print(f"Decompression Ratio: {ratio:.2f}")
