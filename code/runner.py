@@ -8,7 +8,7 @@ def print_banner():
     banner = [
         "╔══════════════════════════════════════════╗",
         "║              The .txi Project            ║",
-        "║            (c) 2025 Webbrowser11         ║",
+        "║            (c) 2026 Webbrowser11         ║",
         "║         Licensed under MIT License       ║",
         "╚══════════════════════════════════════════╝",
     ]

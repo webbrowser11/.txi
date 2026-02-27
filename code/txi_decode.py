@@ -51,4 +51,3 @@ def decode_txi_to_txt():
     print(f"→ Wrote '{out_txt}' (LZMA decompressed)")
     print(f"Compressed Size:   {compressed_size} bytes")
     print(f"Decoded Size:      {decompressed_size} bytes")
-    print(f"Decompression Ratio: {ratio:.2f}")

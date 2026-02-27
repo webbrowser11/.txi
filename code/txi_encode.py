@@ -40,4 +40,3 @@ def encode_txt_to_txi():
     print(f"→ Wrote '{out_file}' (LZMA compressed)")
     print(f"Original Size:   {original_size} bytes")
     print(f"Compressed Size: {compressed_size} bytes")
-    print(f"Compression Ratio: {ratio:.2f}")
