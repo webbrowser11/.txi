@@ -24,8 +24,7 @@ def run_all():
         print(" 1. Convert .txt ➔ .txi (raw, human-readable)")
         print(" 2. Convert .txi ➔ .txt (raw)")
         print(" Q. Quit")
-        print("Please note: .txi files now contain your text directly—fully human-readable.")
-
+        
         choice = input("\nEnter your choice (1, 2, or Q): ").strip().lower()
         if choice == "1":
             encode_txt_to_txi()
@@ -39,4 +38,5 @@ def run_all():
             print("Invalid choice. Try again.")
 
 if __name__ == "__main__":
+
     run_all()
